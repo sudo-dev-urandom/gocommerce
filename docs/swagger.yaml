@@ -1,0 +1,51 @@
+definitions:
+  models.User:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/users:
+    get:
+      consumes:
+      - multipart/form-data
+      description: Get list of users
+      operationId: users-user-list
+      parameters:
+      - default: 1
+        description: page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: number of User in single page
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get list of users
+      tags:
+      - users
+swagger: "2.0"
