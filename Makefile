@@ -13,6 +13,5 @@ generate-docs:
 	@echo "Updating API documentation..."
 	@swag init
 
-
 unit-test:
 	@go test tests/unit/*_test.go

@@ -1,9 +1,14 @@
 definitions:
+  controllers.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   models.User:
     properties:
       address:
-        type: string
-      created_at:
         type: string
       email:
         type: string
@@ -19,7 +24,30 @@ definitions:
 info:
   contact: {}
 paths:
-  /api/v1/users:
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login account
+      operationId: auth-login
+      parameters:
+      - description: JSON Request Body
+        in: body
+        name: RequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Login account
+      tags:
+      - auth
+  /v1/users:
     get:
       consumes:
       - multipart/form-data

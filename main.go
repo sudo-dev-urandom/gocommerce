@@ -3,7 +3,6 @@ package main
 import (
 	"gocommerce/controllers"
 	"gocommerce/core"
-
 	_ "gocommerce/docs"
 	"os"
 
@@ -25,8 +24,10 @@ func main() {
 	e.GET("/docs/*", echoSwagger.WrapHandler)
 	api := e.Group("/v1")
 	{
+		auth := api.Group("/auth")
+		auth.POST("/login", controllers.Login)
 		users := api.Group("/users")
-		// mid.SetClientJWTmiddlewares(users, "user")
+		// middlewares.SetClientJWTmiddlewares(users, "user")
 		users.GET("", controllers.UserList)
 		users.POST("/create", controllers.UserCreate)
 		users.PATCH("/update/:id", controllers.UserUpdate)

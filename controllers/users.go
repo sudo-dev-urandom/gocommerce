@@ -1,24 +1,30 @@
 package controllers
 
 import (
+	"fmt"
 	"gocommerce/core"
 	"gocommerce/helper"
 	"gocommerce/models"
-
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/thedevsaddam/govalidator"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type (
-	CreateUserRequest struct {
+	User struct {
 		Name     string `json:"name"`
 		Username string `json:"username"`
 		Email    string `json:"email"`
 		Password string `json:"password"`
 		Address  string `json:"address"`
+	}
+
+	LoginRequest struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
 )
 
@@ -116,7 +122,7 @@ func UserUpdate(c echo.Context) error {
 		"password": []string{"required"},
 		"address":  []string{"required"},
 	}
-	requestBody := CreateUserRequest{}
+	requestBody := User{}
 	validate := helper.ValidateRequestPayload(c, payloadRules, &requestBody)
 	if validate != nil {
 		return helper.Response(http.StatusUnprocessableEntity, validate, "Validation error")
@@ -158,6 +164,64 @@ func UserDelete(c echo.Context) error {
 		Status:  http.StatusOK,
 		Message: "Success",
 		Data:    users,
+	}
+
+	return c.JSON(http.StatusOK, response)
+}
+
+// Login login account
+// @Summary Login account
+// @Description Login account
+// @Tags auth
+// @ID auth-login
+// @Accept json
+// @Produce application/json
+// @Param RequestBody body LoginRequest true "JSON Request Body"
+// @Success 200 {object} string
+// @Router /v1/auth/login [post]
+func Login(c echo.Context) error {
+	defer c.Request().Body.Close()
+
+	requestBody := new(LoginRequest)
+	if err := c.Bind(requestBody); err != nil {
+		return helper.Response(http.StatusBadRequest, err, "Binding request error")
+	}
+
+	// type (
+	// 	UserEmailFilter struct {
+	// 		Email string `condition:"WHERE" json:"email"`
+	// 	}
+
+	// 	UsernameFilter struct {
+	// 		Username string `condition:"WHERE" json:"username"`
+	// 	}
+	// )
+
+	user := models.User{}
+	notFound := core.App.DB.Where("email = ? OR username = ?", requestBody.Username, requestBody.Username).First(&user).RecordNotFound()
+
+	if notFound {
+		return helper.Response(http.StatusUnauthorized, "Wrong username/email or passworda", "Wrong username/email or password")
+	}
+	fmt.Println(requestBody)
+	fmt.Println("tes", user.Password, "   tes", requestBody.Password)
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestBody.Password))
+	if err != nil {
+		return helper.Response(http.StatusUnauthorized, "Wrong username/email or passwordb", "Wrong username/email or password")
+	}
+
+	token, err := helper.CreateJwtToken(user.ID)
+	if err != nil {
+		return helper.Response(http.StatusInternalServerError, err, "Error creating token")
+	}
+
+	response := helper.HttpResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data: map[string]interface{}{
+			"token": token,
+			"user":  user,
+		},
 	}
 
 	return c.JSON(http.StatusOK, response)

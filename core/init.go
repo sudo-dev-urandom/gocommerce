@@ -24,13 +24,14 @@ type (
 	}
 
 	Config struct {
-		Port    string `envconfig:"APPPORT"`
-		DB_HOST string `envconfig:"DB_HOST"`
-		DB_USER string `envconfig:"DB_USER"`
-		DB_PASS string `envconfig:"DB_PASS"`
-		DB_NAME string `envconfig:"DB_NAME"`
-		DB_PORT string `envconfig:"DB_PORT"`
-		DB_LOG  int    `envconfig:"DB_LOG"`
+		Port       string `envconfig:"APPPORT"`
+		DB_HOST    string `envconfig:"DB_HOST"`
+		DB_USER    string `envconfig:"DB_USER"`
+		DB_PASS    string `envconfig:"DB_PASS"`
+		DB_NAME    string `envconfig:"DB_NAME"`
+		DB_PORT    string `envconfig:"DB_PORT"`
+		DB_LOG     int    `envconfig:"DB_LOG"`
+		JWT_SECRET string `envconfig:"JWT_SECRET"`
 	}
 )
 
