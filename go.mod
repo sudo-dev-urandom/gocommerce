@@ -11,6 +11,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/labstack/echo/v4 v4.6.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/swaggo/echo-swagger v1.1.4 // indirect
 	github.com/swaggo/swag v1.7.4 // indirect
 	github.com/thedevsaddam/govalidator v1.9.10 // indirect
